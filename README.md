@@ -44,7 +44,7 @@ cd infra
 cp .env.example .env
 ```
 
-Edit `.env` with your Postgres/Redis URLs, `SANDBOX_API_KEYS`, optional `XAI_API_KEY` (for Grok / LiteLLM), and vendor keys as needed. For the web demo, set `SANDBOX_SERVER_API_KEY` to match one of the keys in `SANDBOX_API_KEYS`.
+Edit `.env` with your Postgres/Redis URLs, `SANDBOX_API_KEYS`, optional `GROQ_API_KEY` (for Groq / LiteLLM), and vendor keys as needed. For the web demo, set `SANDBOX_SERVER_API_KEY` to match one of the keys in `SANDBOX_API_KEYS`.
 
 Load the same variables when running the API (e.g. `export $(grep -v '^#' .env | xargs)` from `infra/`, or point your shell at a copy of `.env` in `apps/api/`).
 
@@ -113,8 +113,8 @@ See `infra/.env.example` for the full matrix. Highlights:
 | `DATABASE_URL` | Async Postgres URL for the API (`postgresql+asyncpg://...`) |
 | `REDIS_URL` | Redis for cache + rate limits |
 | `TEMPORAL_TARGET` | e.g. `localhost:7233`; if unset, evaluation runs inline |
-| `LITELLM_MODEL` | LiteLLM model id (default `xai/grok-3-mini`; e.g. `xai/grok-4-1-fast-non-reasoning`) |
-| `XAI_API_KEY` | xAI API key for Grok when using `xai/...` models |
+| `LITELLM_MODEL` | LiteLLM model id (default `groq/llama-3.3-70b-versatile`; use `groq/...` prefix for Groq) |
+| `GROQ_API_KEY` | Groq API key from [console.groq.com](https://console.groq.com/) when using `groq/...` models |
 | `NIA_API_KEY` / `NIA_BASE_URL` | Nia REST integration |
 | `GREPTILE_API_KEY` / `GITHUB_TOKEN` / `GREPTILE_BASE_URL` | Greptile |
 | `ALLSCALE_API_KEY` / `ALLSCALE_BASE_URL` | AllScale payment simulation |
