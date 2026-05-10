@@ -33,13 +33,15 @@ services:
       postgres-temporal:
         condition: service_healthy
     environment:
-      - DB=postgresql
+      # temporalio/auto-setup expects postgres12|postgres12_pgx|mysql8|cassandra — not "postgresql"
+      - DB=postgres12
       - DB_PORT=5432
       - POSTGRES_USER=temporal
       - POSTGRES_PWD=temporal
       - POSTGRES_SEEDS=postgres-temporal
     ports:
       - "7233:7233"
+    restart: unless-stopped
 
   temporal-ui:
     image: temporalio/ui:2.31.2
