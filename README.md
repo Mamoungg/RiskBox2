@@ -3,6 +3,7 @@
 Machine-to-machine **decision sandbox** for AI agents: evaluate a proposed risky action before execution by combining repository and policy grounding (Nia), codebase risk signals (Greptile), payment and settlement simulation (AllScale), and an LLM verdict via LiteLLM.
 
 ## Architecture
+Test
 
 - **apps/api** — FastAPI service: API key auth, `POST /api/v1/sandbox/evaluate`, Redis cache and rate limits, Postgres persistence, optional Temporal-orchestrated evaluation.
 - **apps/web** — Next.js 15 demo dashboard (optional inspection UI; proxies to the API with a server-side key).
