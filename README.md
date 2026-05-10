@@ -37,6 +37,26 @@ Compose wires Postgres, Redis, Temporal, the API, a Temporal **worker**, and the
 
 ## Quick start (local, no Docker)
 
+### If it “does not run” (macOS)
+
+Check these first; they are the usual causes:
+
+1. **Python too old** — The API needs **Python 3.12+**. Apple’s `/usr/bin/python3` is often **3.9**, which will not work. Check with `python3 --version`. Fix:
+   ```bash
+   brew install python@3.12
+   ```
+   Then put that Python on your `PATH` (Apple Silicon):
+   ```bash
+   echo 'export PATH="/opt/homebrew/opt/python@3.12/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+   ```
+   (On Intel Homebrew, the prefix is often `/usr/local/opt/python@3.12/bin`.)
+
+2. **You don’t have `uv`** — That’s fine. Use the helper script below (it uses `venv` + `pip`).
+
+3. **Postgres or Redis not running** — The API will fail on startup or on `/readyz` if it cannot connect. Start them or fix `DATABASE_URL` / `REDIS_URL` in `infra/.env`.
+
+4. **Missing `infra/.env`** — Run `cp infra/.env.example infra/.env` and set at least `SANDBOX_API_KEYS`, database, and Redis URLs.
+
 ### 1. Configure environment
 
 ```bash
@@ -48,7 +68,16 @@ Edit `.env` with your Postgres/Redis URLs, `SANDBOX_API_KEYS`, optional `GROQ_AP
 
 Load the same variables when running the API (e.g. `export $(grep -v '^#' .env | xargs)` from `infra/`, or point your shell at a copy of `.env` in `apps/api/`).
 
-### 2. Backend (Python 3.12 + uv recommended)
+### 2. Backend (helper script, no Docker / no `uv` required)
+
+From the repo root (loads `infra/.env`, creates `apps/api/.venv`, installs deps):
+
+```bash
+cd /Users/mamoun/Documents/RiskBox-2/agent-preflight-sandbox
+./scripts/run-api-local.sh
+```
+
+**Or** with [uv](https://github.com/astral-sh/uv) (if you install it):
 
 ```bash
 cd apps/api
@@ -70,10 +99,15 @@ If `TEMPORAL_TARGET` is **unset**, skip the worker; the API runs the full pipeli
 ```bash
 # from repository root
 pnpm install
-pnpm dev:web
 ```
 
-Create `apps/web/.env.local` from `apps/web/.env.example` (`SANDBOX_API_URL`, `SANDBOX_SERVER_API_KEY`).
+Copy `apps/web/.env.example` to `apps/web/.env.local` and set `SANDBOX_API_URL` and `SANDBOX_SERVER_API_KEY`. Then:
+
+```bash
+./scripts/run-web-local.sh
+```
+
+(or `pnpm dev:web` from the repo root).
 
 - API: `http://localhost:8000`
 - API docs: `http://localhost:8000/docs`
