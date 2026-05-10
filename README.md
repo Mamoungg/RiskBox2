@@ -7,22 +7,40 @@ Machine-to-machine **decision sandbox** for AI agents: evaluate a proposed risky
 - **apps/api** — FastAPI service: API key auth, `POST /api/v1/sandbox/evaluate`, Redis cache and rate limits, Postgres persistence, optional Temporal-orchestrated evaluation.
 - **apps/web** — Next.js 15 demo dashboard (optional inspection UI; proxies to the API with a server-side key).
 - **packages/shared-types** — Shared TypeScript types aligned with the evaluate contract.
-- **infra** — `.env.example` template for local configuration.
+- **infra** — `.env.example` template for local configuration and `docker-compose.yml` for a full Docker stack.
 
 ## Prerequisites
 
-Run these yourself (Homebrew, cloud, or any install you prefer):
+For **local development without Docker**, install yourself (Homebrew, cloud, or another path):
 
 - **PostgreSQL** (for `DATABASE_URL`)
 - **Redis** (for `REDIS_URL`)
 - **Optional:** a **Temporal** dev server on `localhost:7233` if you set `TEMPORAL_TARGET`; otherwise leave `TEMPORAL_TARGET` unset and evaluations run **inline** in the API (no worker process needed).
 
-## Quick start (local)
+## Quick start (Docker)
+
+From the repository root:
+
+```bash
+cd infra
+cp .env.example .env
+# Edit .env: set SANDBOX_API_KEYS (and optional LLM / vendor keys). Use SANDBOX_SERVER_API_KEY equal to one of those keys for the web proxy.
+docker compose up --build
+```
+
+- API: `http://localhost:8000`
+- API docs: `http://localhost:8000/docs`
+- Web demo: `http://localhost:3000`
+- Temporal UI: `http://localhost:8080`
+
+Compose wires Postgres, Redis, Temporal, the API, a Temporal **worker**, and the Next.js **web** app. `DATABASE_URL`, `REDIS_URL`, and `TEMPORAL_TARGET` for the API and worker are set inside `docker-compose.yml` so services use in-cluster hostnames. If the worker is unhealthy, `/evaluate` calls that use Temporal may hang until they time out.
+
+## Quick start (local, no Docker)
 
 ### 1. Configure environment
 
 ```bash
-cd /Users/mamoun/Documents/RiskBox-2/agent-preflight-sandbox/infra
+cd infra
 cp .env.example .env
 ```
 
@@ -33,7 +51,7 @@ Load the same variables when running the API (e.g. `export $(grep -v '^#' .env |
 ### 2. Backend (Python 3.12 + uv recommended)
 
 ```bash
-cd /Users/mamoun/Documents/RiskBox-2/agent-preflight-sandbox/apps/api
+cd apps/api
 uv sync
 uv run uvicorn preflight_api.main:app --reload --host 0.0.0.0 --port 8000
 ```
@@ -41,7 +59,7 @@ uv run uvicorn preflight_api.main:app --reload --host 0.0.0.0 --port 8000
 If you use **Temporal**, run the worker in a second terminal:
 
 ```bash
-cd /Users/mamoun/Documents/RiskBox-2/agent-preflight-sandbox/apps/api
+cd apps/api
 uv run python -m preflight_api.temporal.worker
 ```
 
@@ -50,7 +68,7 @@ If `TEMPORAL_TARGET` is **unset**, skip the worker; the API runs the full pipeli
 ### 3. Frontend (pnpm)
 
 ```bash
-cd /Users/mamoun/Documents/RiskBox-2/agent-preflight-sandbox
+# from repository root
 pnpm install
 pnpm dev:web
 ```
