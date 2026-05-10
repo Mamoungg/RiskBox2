@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     rate_limit_per_minute: int = 120
     evaluate_cache_ttl_seconds: int = 3600
 
-    litellm_model: str = "gpt-4o-mini"
+    litellm_model: str = "xai/grok-3-mini"
 
     nia_api_key: str | None = None
     nia_base_url: str = "https://apigcp.trynia.ai/v2"
