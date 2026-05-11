@@ -150,7 +150,7 @@ See `infra/.env.example` for the full matrix. Highlights:
 | `LITELLM_MODEL` | LiteLLM model id (default `groq/llama-3.3-70b-versatile`; use `groq/...` prefix for Groq) |
 | `GROQ_API_KEY` | Groq API key from [console.groq.com](https://console.groq.com/) when using `groq/...` models |
 | `NIA_API_KEY` / `NIA_BASE_URL` | Nia REST integration |
-| `GREPTILE_API_KEY` / `GITHUB_TOKEN` / `GREPTILE_BASE_URL` | Greptile |
+| `GREPTILE_API_KEY` / `GREPTILE_BASE_URL` | Greptile (optional `GITHUB_TOKEN` only for private GitHub repos) |
 | `ALLSCALE_API_KEY` / `ALLSCALE_BASE_URL` | AllScale payment simulation |
 
 If vendor keys are missing, the service returns **structured mock findings** so the stack stays demoable in a hackathon environment.

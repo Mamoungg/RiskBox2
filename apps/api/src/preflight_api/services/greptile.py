@@ -38,7 +38,7 @@ class GreptileClient:
         await self._client.aclose()
 
     def enabled(self) -> bool:
-        return bool(self.settings.greptile_api_key and self.settings.github_token)
+        return bool(self.settings.greptile_api_key)
 
     def _headers(self) -> dict[str, str]:
         headers = {
@@ -160,7 +160,7 @@ class GreptileClient:
             "repo_summary": "Greptile integration running in mock mode (missing API keys).",
             "affected_areas": ["unknown_without_live_query"],
             "risk_flags": flags or ["mock_mode"],
-            "convention_warnings": ["Configure GREPTILE_API_KEY and GITHUB_TOKEN for live analysis."],
+            "convention_warnings": ["Configure GREPTILE_API_KEY for live analysis."],
             "suggested_checks": [
                 "Run unit and integration tests touching modified modules.",
                 "Request human review for auth and payment-adjacent code.",

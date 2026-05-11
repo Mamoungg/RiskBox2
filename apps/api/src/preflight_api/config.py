@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     nia_base_url: str = "https://apigcp.trynia.ai/v2"
 
     greptile_api_key: str | None = None
-    github_token: str | None = None
+    github_token: str | None = None  # Optional; sent as X-GitHub-Token only if set (e.g. private repos)
     greptile_base_url: str = "https://api.greptile.com/v2"
 
     allscale_api_key: str | None = None
