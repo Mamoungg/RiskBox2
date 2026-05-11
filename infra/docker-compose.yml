@@ -33,7 +33,8 @@ services:
       postgres-temporal:
         condition: service_healthy
     environment:
-      - DB=postgresql
+      # auto-setup only accepts postgres12 / postgres12_pgx (not "postgresql")
+      - DB=postgres12
       - DB_PORT=5432
       - POSTGRES_USER=temporal
       - POSTGRES_PWD=temporal
